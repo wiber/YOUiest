@@ -1,0 +1,195 @@
+body {
+  -webkit-font-smoothing: antialiased;
+  padding: 0; margin: 0;
+  background: #C0FFD8;
+}
+h2 {
+  color: #999;
+  text-shadow: white 0px 1px 0px;
+  font-size:17px;
+  margin: 0 0 10px 0;
+}
+body, textarea, input {
+  font: 15px sans-serif;
+  line-height: 19px;
+}
+#timeline {
+  margin: 0;
+  padding: 0;
+}
+#top_bar {
+  background: rgba(0,0,0,0.2);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#AA000000,endColorstr=#AA000000);
+  height: 2.5em;
+  margin-bottom: 10px;
+  line-height: 2.5em;
+}
+#session_buttons {
+  float:right;
+  margin-right: 10px;
+  font-size: 12px;
+}
+#session_buttons * {
+  color: #fff;
+  text-shadow: 0px 1px rgba(0,0,0,0.2);
+  font-weight:bold;
+}
+#logout, #login, #current_user {
+  display:inline;
+  margin-left:10px;
+}
+#current_user img {
+  width: 20px; height:20px;
+  vertical-align:middle;
+  margin: -2px 5px 0 0;
+}
+#title_bar {
+  color: #fff;
+  font-weight:bold;
+  font-size: 20px;
+  text-shadow: 0px 1px rgba(0,0,0,0.3);
+}
+#wrapper, #title_bar {
+  width: 480px;
+  margin: 0 auto;
+}
+ 
+#wrapper {
+  padding: 0;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  background:#fff;
+  overflow:hidden;
+}
+#info {
+  width: 441px;
+  padding: 0 0px 40px 0;
+}
+#status {
+  border: 1px solid #aaa;
+  padding: 4px 2px;
+  height: 2.5em;
+  resize: none;
+  overflow:auto;
+  margin-bottom: 5px;
+  width:435px;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-box-shadow: white 0px 1px;
+  -moz-box-shadow: white 0px 1px;
+}
+#tweeting_button_container {
+  float:right;
+  margin:0;
+}
+#tweeting_button {
+ 
+}
+#tweeting_status {
+  position:relative;
+  right: 5px;
+  top: 3px;
+  color: #555;
+}
+#latest {
+  float:left;
+  width: 300px;
+  line-height: 16px;
+  height: 30px;
+  overflow:hidden;
+}
+.tweet_wrapper {
+  margin: 0;
+  line-height: 16px;
+  display:block;
+}
+.tweet_wrapper, .tweet_box {
+  padding: 15px 30px 10px 20px;
+}
+.tweet_box {
+  background: #f8f8f8;
+  -moz-border-radius: 3px 3px 0 0;
+  display:none;
+}
+.timeline_item, .tweet_box {
+  border-bottom: 1px solid #eee;
+}
+.tweet_thumb {
+  position:absolute;
+  display: block;
+  height: 50px;
+}
+.tweet_body {
+  margin: -5px 0 0 63px;
+  min-height:58px;
+  display:block;
+  word-wrap: break-word;
+}
+.tweet_body .content {
+  color: #444
+}
+.tweet_body .meta {
+  display:block;
+  line-height: 25px;
+}
+.tweet_body .meta, #latest {
+  font-size: 11px;
+  color: #666;
+}
+.tweet_body .screenname {
+  color: #222;
+  line-height:19px;
+  display:block;
+  font-weight:bold;
+}
+.loading_more {
+  text-align:center;
+  color: #666;
+  padding: 20px;
+}
+#toolbar {
+  position:absolute;
+  top: 10px; right: 10px;
+}
+button {
+  background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ddd));
+  background: -moz-linear-gradient(center top, #fff, #ddd);
+  -webkit-box-shadow: white 0px 1px;
+  -moz-box-shadow: white 0px 1px;
+  text-shadow: 0px 1px white;
+  color: #555;
+  border: 1px solid #aaa;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  
+  cursor: pointer;
+  overflow: visible;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-align:center;
+  margin:0;
+  font-weight: normal;
+  height: 2.0em;
+  line-height:1.2em;
+  padding: 0.1em 0.6em;
+  font-size: 15px;
+}
+button:hover {
+  border-color: #888;
+}
+button:active {
+  border-color: #444;
+}
+#welcome {
+  margin: 0 auto;
+  width: 280px;
+  font-size: 20px;
+  line-height: 27px;
+  color: #444;
+  background: transparent url(http://fatc.onilabs.com/fatc.png) no-repeat top right;
+  padding: 30px 200px 30px 0;
+}
+#welcome a {color: #222}
