@@ -404,9 +404,9 @@ $( "#"+tweet.id ).dialog({
          if (!$(this).parent().hasClass('moved')){$('#'+tweetidstack.pop()).dialog('open')};
          var voteint=parseInt($(this).dialog( "option", "title" )[29])
          if (!(voteint>=2))   { $(this).dialog('destroy');};
-         var voteint=parseInt($(this).dialog( "option", "title" )[29])
          hold(5*cyclespeed*1000);
-         if (!(voteint>=8))  { $(this).dialog('option', 'position', ['left','center']);  }
+        var voteint=parseInt($(this).dialog( "option", "title" )[29])
+        if (!(voteint>=8))  { $(this).dialog('option', 'position', ['left','center']);  }
         hold(15*cyclespeed*1000);
         var voteint=parseInt($(this).dialog( "option", "title" )[29])
         if (!(voteint>=6))  { $(this).dialog('destroy');};
@@ -444,14 +444,15 @@ function scrollfader(){
             $(".wibe").fadeOut('fast');
             didScroll=false;
             hold(3500); 
-            var snapper = setTimeout("$('#'+tweetidstack.pop()).dialog('open');",500);
+            clearTimeout(snapper);
+            var snapper = setTimeout("$('#'+tweetidstack.pop()).dialog('open'); $('.wibe').fadeIn('slow');",500);
             }
-        if(!didScroll){
-            $(".wibe").fadeIn('slow')
+        //if(!didScroll){
+          //  $(".wibe").fadeIn('slow')
         //$('#'+tweetidstack.pop()).dialog("open");
         //$('.tweet_box').dialog("option", "position",['right','bottom']);
         
-        };
+        //};
         }
 }
 // Helper to fetch new tweets:

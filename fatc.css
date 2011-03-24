@@ -69,7 +69,7 @@ body, textarea, input {
 #status {
   border: 1px solid #aaa;
   padding: 4px 2px;
-  height: 2.5em;
+  height: 4.7em;
   resize: none;
   overflow:auto;
   margin-bottom: 5px;
@@ -112,6 +112,7 @@ body, textarea, input {
   background: #f8f8f8;
   -moz-border-radius: 3px 3px 0 0;
   display:none;
+  overflow:hidden;
 }
 .timeline_item, .tweet_box {
   border-bottom: 1px solid #eee;

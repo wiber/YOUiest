@@ -1,0 +1,8 @@
+YOUiest (.com) aims to become a javascript and stratified sjs library that
+
+1 pulls & displays tweets as dialog boxes on a web page
+2 lets users (intuitively) vote on tweets by dragging them up or down
+3 encourages users to retweet, with a vote
+4 dislays tweets without signing in
+
+Blank.html has settings in the body tag required to run.

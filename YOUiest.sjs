@@ -1,3 +1,4 @@
+
 /*
  
  
@@ -41,7 +42,17 @@ var tweetpile= new Array;
 var dragging=false;
 var percentage=0;
 var cyclespeed=5;
+firstrun=false;
 
+/*
+$(document).ready(function() {
+  $('.wibe').dialog({dialogClass: "flora"});
+  $('.flora.ui-dialog').css({position:"fixed"});
+  $(".ui-resizable").stop(function() {
+    $(".flora.ui-dialog").css({position:"fixed"});
+  });
+)};
+*/
 
 var cssId = 'myCss';  // load jqueryui css from google.
 if (!document.getElementById(cssId))
@@ -83,6 +94,84 @@ function addLoadEvent(func) {
   }
 }
 
+/*
+var curea = "nro9c1rNZWptL8xvUHlbw";
+var curespin = "UHzpOFf7xx71TKwEyZEeQ";
+var curetweet ="faqTC5lt072CjLMRAoYEtQ";
+var API_KEY = curea;
+twitter_user='wiber';
+*/
+/*
+if (
+    !$(head).attr('twitter_user'){return
+    }
+else{
+    API_KEY=$(head).attr('twitter_user')
+    }
+*/
+var windowheight = screen.height;//(typeof window.innerHeight != 'undefined' ? window.innerHeight : document.body.offsetHeight);
+var windowwidth=screen.width;//(typeof window.innerWidth != 'undefined' ? window.innerWidth : document.body.offsetWidth);
+var tweetidstack=[];
+var tweetpile= [];
+var dragging=false;
+var percentage=0;
+
+/*
+var headID = document.getElementsByTagName("head")[0];         
+var newScript = document.createElement('script');
+newScript.type = 'text/javascript';
+newScript.src = 'http://code.onilabs.com/0.9.2/oni-apollo.js';
+headID.appendChild(newScript);
+*/
+
+//<script type="text/sjs">require('http://dropbox.com/XXX/fatc.sjs')</script>
+
+var cssIdjq = 'myCss';  // load jqueryui css from google.
+if (!document.getElementById(cssIdjq))
+{
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.id   = cssIdjq;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/smoothness/jquery-ui.css';
+    link.media = 'all';
+    head.appendChild(link);
+}
+
+var cssId = 'fatc';  // load fatc css from dropbox..?.
+if (!document.getElementById(cssId))
+{
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.id   = cssId;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'fatc.css';
+    link.media = 'all';
+    head.appendChild(link);
+}
+
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+
+
+
+
+
+
 
 //----------------------------------------------------------------------
   
@@ -122,15 +211,52 @@ $(window).scroll(function() {
     didScroll = true;
 });
 
+//to be used to avoid opening a dialog tweet if textfieldstatus box has focus
 
 
- 
+$(document).ready(function() {    
+
+    $('.tweet_box')
+            .focus(function() {                
+                $(this).parent().addClass("focus");
+                hold(4*cyclespeed*1000);
+                $(this).parent().removeClass("focus");
+            });
+    $('.tweet_box').blur(
+            function(){
+                $('tweet_box').parent().removeClass('focus');
+                alert('tweet_box')
+                });
+    
+});
+
+
+
+
+
 //----------------------------------------------------------------------
 // main program loop
  
 // Show the twitter connect button:
 T("#login").connectButton();
 // Run our application logic in an endless loop:
+
+
+$('.tweet_box').dialog({ //executed at the right time..
+        autoOpen:false,
+        dialogClass:'wibe',
+        //position:['center','bottom'],
+        width:500,
+})
+//will not autoopen:false.. sticks for a second.
+//$('.tweet_box').parent().hide()
+$('.tweet_box').dialog('open').parent().css({position:"fixed"});;
+$('.tweet_box').dialog('option', 'position', ['left','top']);
+$('.tweet_box').dialog('option', 'height', 85);
+$('.tweet_box').dialog('option','title','Tweets are things');
+$('.tweet_box').css('overflow','hidden');
+
+ 
 while (true) {
   try {
     main();
@@ -153,7 +279,11 @@ function main() {
   $("#login").hide();
   $("#welcome").hide();
   $("#timeline").empty();
-  
+  /*
+  $('.tweet_box').dialog('open');
+         $('.tweet_box').dialog("option", "height", 220);
+         $('.tweet_box').dialog("option", "position", ['left','bottom']);
+         */
   try {
     // Let's set the last tweet and the background based on the
     // user's prefs:
@@ -369,12 +499,19 @@ $( "#"+tweet.id ).dialog({
          $("textarea").val('RT '+percentage.toString()[2]+'@'+$(this).find('.screenname').text()+' '+$(this).find('.content').text());
          
          $('.tweet_box').dialog('open');
+         $('.tweet_box').dialog("option", "height", 220);
          $('.tweet_box').dialog("option", "position", ['left','bottom']);
-         if (!$(this).parent().hasClass('moved')){$('#'+tweetidstack.pop()).dialog('open')};
+         //if (!$(this).parent().hasClass('moved')){$('#'+tweetidstack.pop()).dialog('open')};
+         poptweetnow()
          var voteint=parseInt($(this).dialog( "option", "title" )[29])
          if (!(voteint>=2))   { $(this).dialog('destroy');};
-         var voteint=parseInt($(this).dialog( "option", "title" )[29])
+         if (!(voteint<=9))   { 
+             favorite(status|$(this).parent().attr("tweetid"));
+             };
+         $('#status').focus()
+         
          hold(5*cyclespeed*1000);
+         var voteint=parseInt($(this).dialog( "option", "title" )[29])
          if (!(voteint>=8))  { $(this).dialog('option', 'position', ['left','center']);  }
         hold(15*cyclespeed*1000);
         var voteint=parseInt($(this).dialog( "option", "title" )[29])
@@ -382,7 +519,7 @@ $( "#"+tweet.id ).dialog({
          }, 
     drag:function(event, ui) { 
         var scrolled = $(document).scrollTop()
-        var window=.74*windowheight //$(window).height()
+        var window=.84*windowheight //$(window).height()
         var dragposition = ui.offset.top
         percentage = 1000+Math.round(Math.max(Math.min(100*( ( (window-1.2*(dragposition-scrolled))/(window)    )),99),0),2)    ;      
         var bigdigit= "<span style='font-size:38px'>"+percentage.toString()[2]+"</span>" ;// explains the link between 0-9 vote and percentages/percentiles..
@@ -390,18 +527,21 @@ $( "#"+tweet.id ).dialog({
         $(this).parent().css("opacity",Math.abs(1.4*(percentage-1000)/100-0.07)+.05);
         dragging=true;
             }, 
-});
-
-//$( "#"+tweet.id ).parent().hide()
-//$( "#"+tweet.id ).dialog('option', 'position', [3000,3000])
-//$("#"+tweet.id).parent().effect("scale", { percent: 60, direction: 'both' }, 1000);
- }
+        });
+        if (!(firstrun)){poptweetnow();firstrun=true;}
+        //$('#'+tweetidstack.pop()).dialog("open")
+}
  
+function poptweetnow(){
+    $('#'+tweetidstack.pop()).dialog("open").parent().css({position:"fixed"});
+}
+
 function poptweet(){
 while (true){
     hold(2000);
-if(tweetidstack && tweetidstack.length && !dragging){
-$('#'+tweetidstack.pop()).dialog("open");
+if(tweetidstack && tweetidstack.length && !dragging && !($('.tweet_box').parent().hasClass('focus'))){
+poptweetnow()
+$('#status').focus()
 }
 hold(cyclespeed*1000);
 }} 
@@ -413,7 +553,7 @@ function scrollfader(){
             $(".wibe").fadeOut('fast');
             didScroll=false;
             hold(3500); 
-            var snapper = setTimeout("$('#'+tweetidstack.pop()).dialog('open');",500);
+            var snapper = setTimeout("poptweetnow()",500);
             }
         if(!didScroll){
             $(".wibe").fadeIn('slow')
@@ -444,16 +584,7 @@ function fetch_tweets(params) {
 // displays them:
 function update_timeline_loop() {
   // Run an endless loop:
-  $('.tweet_box').dialog({ //executed at the right time..
-        autoOpen:false,
-        dialogClass:'wibe',
-        position:['center','bottom'],
-        width:500,
-}).hide();
-//will not autoopen:false.. sticks for a second.
-$('.tweet_box').parent().hide()
-$('.tweet_box').dialog('option', 'position', [3000,3000])
-$('.tweet_box').dialog('option','title','Tweets are things');
+
   while (true) {
     // Fetch tweets from twitter:
     var timeline = fetch_tweets({
