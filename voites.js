@@ -1,6 +1,6 @@
-   <script type="text/javascript" src="voites.js"></script>
 
 /*
+<script type="text/javascript" src="voites.js"></script>
 var curea = "nro9c1rNZWptL8xvUHlbw";
 var curespin = "UHzpOFf7xx71TKwEyZEeQ";
 var curetweet ="faqTC5lt072CjLMRAoYEtQ";
