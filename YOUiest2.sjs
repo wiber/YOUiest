@@ -1,5 +1,4 @@
-loadjscssfile("http://dl.dropbox.com/u/1545014/curea/fatc.css", "css") 
-loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/smoothness/jquery-ui.css", "css")
+
 /*
  
  
@@ -28,13 +27,13 @@ It allows you to call any function in the standard RESTful Twitter API
 var result = T.call("statuses/home_timeline", params);
 StratifiedJS is the extended JS used by Oni Apollo to make the
 non-callback style possible (and more!). See http://stratifiedjs.org/sjsdocs.
- var curea = "nro9c1rNZWptL8xvUHlbw";
+ 
+*/
+var curea = "nro9c1rNZWptL8xvUHlbw";
 var curespin = "UHzpOFf7xx71TKwEyZEeQ";
 var curetweet ="faqTC5lt072CjLMRAoYEtQ";
 var youiestdev ="V2UNxW4TKTovoUPUpIY9hA";
 var API_KEY = curea;
-*/
-
 
 var windowheight = screen.height;//(typeof window.innerHeight != 'undefined' ? window.innerHeight : document.body.offsetHeight);
 var windowwidth=screen.width;//(typeof window.innerWidth != 'undefined' ? window.innerWidth : document.body.offsetWidth);
@@ -43,8 +42,64 @@ var tweetpile= new Array;
 var dragging=false;
 var percentage=0;
 var cyclespeed=5;
-var firstrun=false;
-var firstrunYou=false;
+firstrun=false;
+firstrunYou=false;
+
+var cssId = 'myCss';  // load jqueryui css from google.
+if (!document.getElementById(cssId))
+{
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.id   = cssId;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/smoothness/jquery-ui.css';
+    link.media = 'all';
+    head.appendChild(link);
+}
+
+var cssId = 'myCss';  // load jqueryui css from google.
+if (!document.getElementById(cssId))
+{
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.id   = cssId;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'http://dl.dropbox.com/u/1545014/curea/fatc.css';
+    link.media = 'all';
+    head.appendChild(link);
+}
+
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+/*
+var curea = "nro9c1rNZWptL8xvUHlbw";
+var curespin = "UHzpOFf7xx71TKwEyZEeQ";
+var curetweet ="faqTC5lt072CjLMRAoYEtQ";
+var API_KEY = curea;
+twitter_user='wiber';
+*/
+/*
+if (
+    !$(head).attr('twitter_user'){return
+    }
+else{
+    API_KEY=$(head).attr('twitter_user')
+    }
+*/
 var windowheight = screen.height;//(typeof window.innerHeight != 'undefined' ? window.innerHeight : document.body.offsetHeight);
 var windowwidth=screen.width;//(typeof window.innerWidth != 'undefined' ? window.innerWidth : document.body.offsetWidth);
 var tweetidstack=[];
@@ -52,21 +107,58 @@ var tweetpile= [];
 var dragging=false;
 var percentage=0;
 
-function loadjscssfile(filename, filetype){
- if (filetype=="js"){ //if filename is a external JavaScript file
-  var fileref=document.createElement('script')
-  fileref.setAttribute("type","text/javascript")
-  fileref.setAttribute("src", filename)
- }
- else if (filetype=="css"){ //if filename is an external CSS file
-  var fileref=document.createElement("link")
-  fileref.setAttribute("rel", "stylesheet")
-  fileref.setAttribute("type", "text/css")
-  fileref.setAttribute("href", filename)
- }
- if (typeof fileref!="undefined")
-  document.getElementsByTagName("head")[0].appendChild(fileref)
+/*
+var headID = document.getElementsByTagName("head")[0];         
+var newScript = document.createElement('script');
+newScript.type = 'text/javascript';
+newScript.src = 'http://code.onilabs.com/0.9.2/oni-apollo.js';
+headID.appendChild(newScript);
+*/
+
+//<script type="text/sjs">require('http://dropbox.com/XXX/fatc.sjs')</script>
+
+var cssIdjq = 'myCss';  // load jqueryui css from google.
+if (!document.getElementById(cssIdjq))
+{
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.id   = cssIdjq;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/smoothness/jquery-ui.css';
+    link.media = 'all';
+    head.appendChild(link);
 }
+
+var cssId = 'fatc';  // load fatc css from dropbox..?.
+if (!document.getElementById(cssId))
+{
+    var head  = document.getElementsByTagName('head')[0];
+    var link  = document.createElement('link');
+    link.id   = cssId;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = 'fatc.css';
+    link.media = 'all';
+    head.appendChild(link);
+}
+
+function addLoadEvent(func) {
+  var oldonload = window.onload;
+  if (typeof window.onload != 'function') {
+    window.onload = func;
+  } else {
+    window.onload = function() {
+      if (oldonload) {
+        oldonload();
+      }
+      func();
+    }
+  }
+}
+
+
+
 
 
 
@@ -75,6 +167,7 @@ function loadjscssfile(filename, filetype){
 //----------------------------------------------------------------------
   
 // Initialization
+//<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/start/jquery-ui.css" type="text/css" rel="Stylesheet" /> 
   
 // Load the @Anywhere API and init with your application id:
 //require("apollo:twitter")
@@ -83,37 +176,14 @@ function loadjscssfile(filename, filetype){
 // We'll use jquery; load it from Google's CDN and install stratified
 // bindings ($click, etc):
 require("apollo:jquery-binding").install();
-//<script type="text/javascript" src="voites.js"></script>
-//("voites.js")
 //alert($('body').attr('API_KEY'));
-paintpage()
-function paintpage(){
-
-$('body').append(' <div id="wrapper"></div>');
-$('#wrapper').append("<div class='tweet_box'></div>");
-$('#tweet_box').append('<div id="session_wrap"></div>');
-$('#session_wrap').append('<div id="session_buttons"></div>');
-$('#session_buttons').append('<div id="current_user"></div>');
-$('#session_buttons').append('<div id="current_user"></div>');
-$('#session_buttons').append('<div id="login"></div>');
-$('#session_buttons').append('<div id="logout"></div>');
-$('#session_wrap').append('<div id="title_bar"></div>');
-$('.tweet_box').append('<div id="info"></div>');
-$('#info').append('<textarea id="status" onkeyup="update_counter(this)"></textarea>');
-$('#info').append('<span id="latest"><strong>latest: </strong><span></span></span>');
-$('#info').append('<span id="tweeting_button_container"></span>');
-$('#info').append('<span id="tweeting_status"></span>');
-$('#info').append('<button id="tweeting_button">Tweet</button>');
-$('wrapper').append('<div id="timeline"></div>');
-}
-
 if(!twitter_user){var twitter_user='wiber';};
 
 if ($('body').attr('API_KEY')){var API_KEY=$('body').attr('API_KEY')};
 if ($('body').attr('twitter_user')){var twitter_user=$('body').attr('twitter_user')};
 
 var T = require("apollo:twitter").initAnywhere({id:API_KEY});
-var you=require('apollo:twitter').get(twitter_user);
+var you=require('apollo:twitter').get($('body').attr('twitter_user'));
 
 window.T = T;
 require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"); 
@@ -139,6 +209,23 @@ showYouTweet(you[0],false);
 poptweetnow();
 
 //to be used to avoid opening a dialog tweet if textfieldstatus box has focus
+
+
+$(document).ready(function() {    
+
+    $('.tweet_box')
+            .focus(function() {                
+                $(this).parent().addClass("focus");
+                hold(4*cyclespeed*1000);
+                $(this).parent().removeClass("focus");
+            });
+    $('.tweet_box').blur(
+            function(){
+                $('tweet_box').parent().removeClass('focus');
+                alert('tweet_box')
+                });
+    
+});
 
 
 
@@ -780,6 +867,7 @@ $( "#"+tweet.id ).dialog({
             $('.tweet_box').dialog("option", "position", ['left','bottom']);
             firstrunYOU=true;
              $("textarea").val("checking out youiest.com. it's ... (blowing my mind)");
+             require('apollo:debug').console();
             }
         //$('#'+tweetidstack.pop()).dialog("open")
 } 
