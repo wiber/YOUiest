@@ -1,5 +1,12 @@
+require('apollo:debug').console();
 loadjscssfile("http://dl.dropbox.com/u/1545014/curea/fatc.css", "css") 
-loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/smoothness/jquery-ui.css", "css")
+require("apollo:jquery-binding").install();
+//require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jquery/1.5.11/jquery.min.js");
+//loadjscssfile("https://ajax.googleapis.com/ajax/libs/jquery/1.5.11/jquery.min.js", "js")
+loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/smoothness/jquery-ui.css", "css")
+loadjscssfile("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js", "js")
+
+//require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js");
 /*
  
  
@@ -82,52 +89,58 @@ function loadjscssfile(filename, filetype){
  
 // We'll use jquery; load it from Google's CDN and install stratified
 // bindings ($click, etc):
-require("apollo:jquery-binding").install();
+
 //<script type="text/javascript" src="voites.js"></script>
 //("voites.js")
-//alert($('body').attr('API_KEY'));
-paintpage()
+//require("apollo:jquery-binding").install();
 function paintpage(){
+    $('body').append(' <div id="wrapper"></div>');
+    $('#wrapper').html('<div class="tweet_box"></div>');
+    $('.tweet_box').html('<div id="session_wrap"></div>');
+    $('#session_wrap').html('<div id="session_buttons"></div>');
+    $('#session_buttons').html('<div id="current_user"></div><div id="login"></div><div id="logout"></div>');
+    //$('#session_buttons').append('<div id="login"></div>');
+    //$('#session_buttons').append('<div id="logout"></div>');
+    $('#session_wrap').append('<div id="title_bar"></div>');
+    $('.tweet_box').append('<div id="info"></div>');
+    $('#info').append('<textarea id="status" onkeyup="update_counter(this)"></textarea>');
+    $('#info').append('<span id="latest"><strong>latest: </strong><span></span></span>');
+    $('#info').append('<span id="tweeting_button_container"></span>');
+    $('#info').append('<span id="tweeting_status"></span>');
+    $('#info').append('<button id="tweeting_button">Tweet</button>');
+    $('wrapper').append('<div id="timeline"></div>');
+//window.session_wrap='<div id="session_buttons"><div id="current_user"></div></div>'
+};
 
-$('body').append(' <div id="wrapper"></div>');
-$('#wrapper').append("<div class='tweet_box'></div>");
-$('#tweet_box').append('<div id="session_wrap"></div>');
-$('#session_wrap').append('<div id="session_buttons"></div>');
-$('#session_buttons').append('<div id="current_user"></div>');
-$('#session_buttons').append('<div id="current_user"></div>');
-$('#session_buttons').append('<div id="login"></div>');
-$('#session_buttons').append('<div id="logout"></div>');
-$('#session_wrap').append('<div id="title_bar"></div>');
-$('.tweet_box').append('<div id="info"></div>');
-$('#info').append('<textarea id="status" onkeyup="update_counter(this)"></textarea>');
-$('#info').append('<span id="latest"><strong>latest: </strong><span></span></span>');
-$('#info').append('<span id="tweeting_button_container"></span>');
-$('#info').append('<span id="tweeting_status"></span>');
-$('#info').append('<button id="tweeting_button">Tweet</button>');
-$('wrapper').append('<div id="timeline"></div>');
-}
 
-if(!twitter_user){var twitter_user='wiber';};
 
-if ($('body').attr('API_KEY')){var API_KEY=$('body').attr('API_KEY')};
-if ($('body').attr('twitter_user')){var twitter_user=$('body').attr('twitter_user')};
+if ($('#youiest').attr('API_KEY')){var API_KEY=$('#youiest').attr('API_KEY')};
+if ($('#youiest').attr('twitter_user')){var twitter_user=$('#youiest').attr('twitter_user')};
+//if(!twitter_user){var twitter_user='wiber';};
 
 var T = require("apollo:twitter").initAnywhere({id:API_KEY});
 var you=require('apollo:twitter').get(twitter_user);
-
+//window.API_KEY=API_KEY;
 window.T = T;
-require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"); 
+var common = require("apollo:common");
+
 //require('apollo:http').script("http://dl.dropbox.com/u/1545014/curea/jquery.touch.js");
 
 
 var common = require("apollo:common");
-var tweeting_button = $("#tweeting_button");
+var tweeting_button = $("#tweeting_wrap");
 var status_el = $("#status");
 var counter = $("#tweeting_status");
 $.fx.speeds._default = 600; //jquery animation speed
 
 
-
+function poptweetnow(){
+    
+    if(tweetidstack && tweetidstack.length ){
+    $('#'+tweetidstack.pop()).dialog("open").parent().css({position:"fixed"});
+    $('#status').focus()
+    }
+}
 
 //hide dialogs when scrolling
 var didScroll = false;
@@ -140,9 +153,7 @@ poptweetnow();
 
 //to be used to avoid opening a dialog tweet if textfieldstatus box has focus
 
-
-
-
+paintpage()
 
 //----------------------------------------------------------------------
 // main program loop
@@ -158,14 +169,15 @@ $('.tweet_box').dialog({ //executed at the right time..
         //position:['center','bottom'],
         width:500,
 })
-//will not autoopen:false.. sticks for a second.
-//$('.tweet_box').parent().hide()
 $('.tweet_box').dialog('open').parent().css({position:"fixed"});;
 $('.tweet_box').dialog('option', 'position', ['left','top']);
 $('.tweet_box').dialog('option', 'height', 0);
-$('.tweet_box').dialog('option','title',$('#session_wrap').html());
+$('.tweet_box').dialog('option','title',$('#session_buttons').html());
+//$('.tweet_box').dialog('option','title','things');
 $('.tweet_box').css('overflow','hidden');
 
+//will not autoopen:false.. sticks for a second.
+//$('.tweet_box').parent().hide()
 
  
 while (true) {
@@ -279,7 +291,13 @@ function ui_mute_loop() {
     return false;
   };
   
-  var button = $("<a href='#'>Mute list</a>").prependTo("#session_buttons");
+  //var button = $("<a href='#'>Mute list  </a>").prependTo("#logout");
+  var button = $("<a href='#'>  Mute list  </a>").appendTo("#current_user");
+  //var button = $("<a href='#'>Mute list</a>")
+  
+  //.appendTo("#session_buttons");
+  //$('.tweet_box').dialog('option','title',$('#session_buttons').html()+"<a href='#'>Mute list</a>");
+ 
   try {
     while(true) {
       filterArray = localStorage.mute ? localStorage.mute.split(" ") : [];
@@ -412,7 +430,6 @@ $( "#"+tweet.id ).dialog({
          //if (!$(this).parent().hasClass('moved')){$('#'+tweetidstack.pop()).dialog('open')};
          poptweetnow()
         
-        //alert($(this).attr("id"));
         var voteint=parseInt($(this).dialog( "option", "title" )[29]);
          if (!(voteint>1))   { 
             $(this).dialog('destroy');
@@ -449,15 +466,11 @@ $( "#"+tweet.id ).dialog({
             $('.tweet_box').dialog("option", "position", ['left','bottom']);
             firstrun=true;
              $("textarea").val("checking out youiest.com. it's ... (blowing my mind)");
-             require('apollo:debug').console();
             }
         //$('#'+tweetidstack.pop()).dialog("open")
 }
  
-function poptweetnow(){
-    $('#'+tweetidstack.pop()).dialog("open").parent().css({position:"fixed"});
-    $('#status').focus()
-}
+
 
 function poptweet(){
 while (true){
@@ -629,6 +642,7 @@ function waitfor_signout() {
  
 // Append/prepend a tweet to the timeline
 function showYouTweet(tweet, append) {
+    
   if (window["tweetFilter"] && tweetFilter(tweet)) return;
  
   var date = new Date(tweet.created_at.replace(/^\w+ (\w+) (\d+) ([\d:]+) \+0000 (\d+)$/,
@@ -705,82 +719,74 @@ tweetpile.push((common.supplant("\
 ));
 
 $("body")[append ? "append" : "prepend"](tweetpile.pop()); 
-
- 
 $( "#"+tweet.id ).dialog({ 
     title:tweet.user.screen_name+" - "+date_string +'   [   DRAG ME!   ]',
     position: ['right','center'], 
     autoOpen:false,
     dialogClass: 'wibe',
     width:500,
- dragStart:function(event, ui) { 
-        dragging=true;
-        $('.tweet_box').dialog('close');
-        $(this).parent().addClass('moved');
-        $(this).parent().removeClass('snapmoved');
-        },
- 
-  open: function(event, ui) { 
- hold(1.6*cyclespeed*1000); //stack them at the top instead of where new spawn
- if(!$(this).parent().hasClass('moved')){
- $(this).dialog('option', 'position', ['right','top']);
- $(this).parent().addClass('snapmoved');
- }
- 
- 
- //setInterval("$(this).dialog('option', 'position', ['right','center']);",1000);
- //setTimeout("if (!(this).parent().hasClass('moved')) {$(this).parent().dialog('option', 'position', ['right','top'])} ;",1500) 
- 
- },
- focus: function(event, ui) { return false },
- dragStop:function(event, ui) { 
-     dragging=false;
-     $(this).parent().css("opacity",1);
-         $("textarea").val('RT '+percentage.toString()[2]+'@'+$(this).find('.screenname').text()+' '+$(this).find('.content').text());
-         $('.tweet_box').dialog('open');
-         $('.tweet_box').dialog("option", "height", 180);
-         $('.tweet_box').dialog("option", "position", ['left','bottom']);
-         //if (!$(this).parent().hasClass('moved')){$('#'+tweetidstack.pop()).dialog('open')};
-         poptweetnow()
-        
-        //alert($(this).attr("id"));
+     dragStart:function(event, ui) { 
+            dragging=true;
+            $('.tweet_box').dialog('close');
+            $(this).parent().addClass('moved');
+            $(this).parent().removeClass('snapmoved');
+            },
+     
+    open: function(event, ui) { 
+            hold(1.6*cyclespeed*1000); //stack them at the top instead of where new spawn
+                if(!$(this).parent().hasClass('moved')){
+                $(this).dialog('option', 'position', ['right','top']);
+                $(this).parent().addClass('snapmoved');
+                }
+            },
+    focus: function(event, ui) { 
+            return false },
+    dragStop:function(event, ui) { 
+        dragging=false;
+        $(this).parent().css("opacity",1);
+        $("textarea").val('RT '+percentage.toString()[2]+'@'+$(this).find('.screenname').text()+' '+$(this).find('.content').text());
+        $('.tweet_box').dialog('open');
+        $('.tweet_box').dialog("option", "height", 180);
+        $('.tweet_box').dialog("option", "position", ['left','bottom']);
+        poptweetnow()
         var voteint=parseInt($(this).dialog( "option", "title" )[29]);
-         if (!(voteint>1))   { 
+        if (!(voteint>1))   { 
             $(this).dialog('destroy');
             }
-         else if (!(voteint<9))   { 
-            //$(this).parent().find('.ui-dialog-titlebar').append($(this).attr("id")'#');
+        else if (!(voteint<9))   { 
             T.call("favorites/destroy/:id", [$(this).attr("id") ]);
             T.call("favorites/create/:id", [ $(this).attr("id") ]);
             $(this).parent().find('.ui-dialog-titlebar').append('Favorite Created');
-             };
-         $('#status').focus();
-         
-         hold(5*cyclespeed*1000);
-         var voteint=parseInt($(this).dialog( "option", "title" )[29])
-         if (!(voteint>=8))  { $(this).dialog('option', 'position', ['left','center']);  }
-        hold(15*cyclespeed*1000);
+            };
+        $('#status').focus();
+        hold(5*cyclespeed*1000);
         var voteint=parseInt($(this).dialog( "option", "title" )[29])
-        if (!(voteint>=6))  { $(this).dialog('destroy');};
-         }, 
+        if (!(voteint>=8))  { 
+            $(this).dialog('option', 'position', ['left','center']);  }
+            hold(15*cyclespeed*1000);
+            var voteint=parseInt($(this).dialog( "option", "title" )[29])
+        if (!(voteint>=6))  { 
+            $(this).dialog('destroy');
+            };
+        }, 
     drag:function(event, ui) { 
         var scrolled = $(document).scrollTop()
         var window=.84*windowheight //$(window).height()
         var dragposition = ui.offset.top
-        percentage = 1000+Math.round(Math.max(Math.min(100*( ( (window-1.2*(dragposition-scrolled))/(window)    )),99),0),2)    ;      
+        var percentage = 1000+Math.round(Math.max(Math.min(100*( ( (window-1.2*(dragposition-scrolled))/(window)    )),99),0),2)    ;      
         var bigdigit= "<span style='font-size:38px'>"+percentage.toString()[2]+"</span>" ;// explains the link between 0-9 vote and percentages/percentiles..
         $("#"+tweet.id ).dialog('option', 'title', bigdigit+""+percentage.toString()[3]+"%" );
         $(this).parent().css("opacity",Math.abs(1.4*(percentage-1000)/100-0.07)+.05);
         dragging=true;
-            }, 
+            } 
         });
-        if (!(firstrunYou)){
-            poptweetnow();
-            $('.tweet_box').dialog("option", "height", 220);
-            $('.tweet_box').dialog("option", "position", ['left','bottom']);
-            firstrunYOU=true;
-             $("textarea").val("checking out youiest.com. it's ... (blowing my mind)");
-            }
+    if (!(firstrunYou)){
+        poptweetnow();
+        $('.tweet_box').dialog("option", "height", 220);
+        $('.tweet_box').dialog("option", "position", ['left','bottom']);
+        firstrunYOU=true;
+         $("textarea").val("checking out youiest.com. it's ... (blowing my mind)");
+        };
         //$('#'+tweetidstack.pop()).dialog("open")
-} 
+}; 
  
