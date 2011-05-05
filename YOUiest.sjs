@@ -59,6 +59,8 @@ var tweetpile= [];
 var dragging=false;
 var percentage=0;
 
+//can sjs code files be added the same way?
+// can we add script as a head element, not a link?
 function loadjscssfile(filename, filetype){
  if (filetype=="js"){ //if filename is a external JavaScript file
   var fileref=document.createElement('script')
@@ -89,10 +91,6 @@ function loadjscssfile(filename, filetype){
  
 // We'll use jquery; load it from Google's CDN and install stratified
 // bindings ($click, etc):
-
-//<script type="text/javascript" src="voites.js"></script>
-//("voites.js")
-//require("apollo:jquery-binding").install();
 function paintpage(){
     $('body').append(' <div id="wrapper"></div>');
     $('#wrapper').html('<div class="tweet_box"></div>');
@@ -113,27 +111,40 @@ function paintpage(){
 };
 
 
-
+// read settings from id=youiest . what's the best way for the host to add these variables? window.var? unsuccefull
 if ($('#youiest').attr('API_KEY')){var API_KEY=$('#youiest').attr('API_KEY')};
+//if (window.SET_API_KEY){var API_KEY=window.SET_API_KEY};
 if ($('#youiest').attr('twitter_user')){var twitter_user=$('#youiest').attr('twitter_user')};
+//if (window.SET_twitter_user){var API_KEY=window.SET_twitter_user};
 //if(!twitter_user){var twitter_user='wiber';};
 
+// init the twitter object with key
 var T = require("apollo:twitter").initAnywhere({id:API_KEY});
+
+// get tweets from page hosts twitter account.
 var you=require('apollo:twitter').get(twitter_user);
 //window.API_KEY=API_KEY;
-window.T = T;
-var common = require("apollo:common");
 
+// makes twitter object global (not sjs scope) so it can be accessed by debugger console.
+//window.T = T;
+
+
+//attempt to make dialog draggable on mobile touch devices. unsolved.
 //require('apollo:http').script("http://dl.dropbox.com/u/1545014/curea/jquery.touch.js");
 
-
+// tools
 var common = require("apollo:common");
+
+//cache ... unsure
 var tweeting_button = $("#tweeting_wrap");
+// cache tweet input box .. performance
 var status_el = $("#status");
+// cache characters left.. perf
 var counter = $("#tweeting_status");
-$.fx.speeds._default = 600; //jquery animation speed
 
+//$.fx.speeds._default = 600; //jquery animation speed
 
+// if we have tweets, open a dialog, with id of last tweet, focus tweet box to avoid input box stealing focus..
 function poptweetnow(){
     
     if(tweetidstack && tweetidstack.length ){
@@ -148,11 +159,13 @@ $(window).scroll(function() {
     didScroll = true;
 });
 
+//build hosts first tweet
 showYouTweet(you[0],false);
+// display first tweet from host
 poptweetnow();
 
-//to be used to avoid opening a dialog tweet if textfieldstatus box has focus
 
+// create elements on page, timing has importance
 paintpage()
 
 //----------------------------------------------------------------------
@@ -162,24 +175,25 @@ paintpage()
 T("#login").connectButton();
 // Run our application logic in an endless loop:
 
-
+// open input box, slim , expand later
 $('.tweet_box').dialog({ //executed at the right time..
         autoOpen:false,
         dialogClass:'wibe',
         //position:['center','bottom'],
         width:500,
 })
+
 $('.tweet_box').dialog('open').parent().css({position:"fixed"});;
 $('.tweet_box').dialog('option', 'position', ['left','top']);
 $('.tweet_box').dialog('option', 'height', 0);
+//adding the login buttons and controls to inputbox
 $('.tweet_box').dialog('option','title',$('#session_buttons').html());
-//$('.tweet_box').dialog('option','title','things');
 $('.tweet_box').css('overflow','hidden');
 
 //will not autoopen:false.. sticks for a second.
 //$('.tweet_box').parent().hide()
 
- 
+//endless loop 
 while (true) {
   try {
     main();
@@ -201,14 +215,19 @@ function main() {
     T.waitforEvent("authComplete");
   $("#login").hide();
   $("#welcome").hide();
+  // investigate / remove timeline elements and functionality..
   $("#timeline").empty();
  
   try {
     // Let's set the last tweet and the background based on the
     // user's prefs:
+    // create profile object from current users twitter object, 
     var profile = T.call("users/show", {user_id: T.currentUser.id});
+    // on input box, set name of logged in user
     $("#current_user").text(profile.screen_name);
+    // users image on inputbox
     $("#current_user").prepend("<img src='"+profile.profile_image_url + "'/>");
+    // adds users last tweet to tweet box, last tweet status
     setLatestTweet(profile.status);
 /*
 //we want to run this as an external script, hands off original page
@@ -246,14 +265,20 @@ function main() {
       ui_mute_loop();
     }
     and {
-       poptweet();
+        // keep popping tweets, sits on a timer and calls poptweetnow
+       poptweet(); 
     }
-    and {scrollfader();}
+    and {
+        // hide dialogs if scrolling has happened recently
+        scrollfader();
+    }
 
   }
   finally {
-    // Clean up:
-    $("#current_user").empty();/*
+    // Clean up: removes buttons, user name etc?
+    $("#current_user").empty();
+    
+    /*
     $("#timeline").empty();
     $("#welcome").show();
     $("body").css({background:""});
@@ -264,7 +289,8 @@ function main() {
  
 //----------------------------------------------------------------------
 // Helper functions
- 
+
+//takes a tweet, sets it as latest tweet.
 function setLatestTweet(tweet) {
   $("#latest")[tweet?"show":"hide"]();
   if (tweet)
@@ -276,10 +302,12 @@ function update_counter() {
   counter.text(140 - status_el.val().length);
 }
  
+ // included mute without unfollow function
 function ui_mute_loop() {
   if (!window["localStorage"]) return;
   
   var filterArray = [];
+  // is tweet a global var? must be. no arg
   tweetFilter = function(tweet) {
     for (var i = filterArray.length; i >= 0; --i) {
       var keyword = filterArray[i];
@@ -291,13 +319,9 @@ function ui_mute_loop() {
     return false;
   };
   
-  //var button = $("<a href='#'>Mute list  </a>").prependTo("#logout");
-  var button = $("<a href='#'>  Mute list  </a>").appendTo("#current_user");
-  //var button = $("<a href='#'>Mute list</a>")
-  
-  //.appendTo("#session_buttons");
-  //$('.tweet_box').dialog('option','title',$('#session_buttons').html()+"<a href='#'>Mute list</a>");
- 
+  // adds link to input box title. investigate how to apply white text css, used to work.. why no longer?
+  var button = $("<a href='#'>  Mute list // </a>").prependTo("#logout");
+  // don't fully understand this.. ternary statements, $click.. localStorage api
   try {
     while(true) {
       filterArray = localStorage.mute ? localStorage.mute.split(" ") : [];
@@ -314,6 +338,7 @@ function ui_mute_loop() {
 }
  
 // Append/prepend a tweet to the timeline
+// we want to add tweets to array _ tweetpile _ instead, then pop them later.
 function showTweet(tweet, append) {
   if (window["tweetFilter"] && tweetFilter(tweet)) return;
  
@@ -343,6 +368,7 @@ function showTweet(tweet, append) {
   // multiline strings in StratifiedJS. We also use the
   // 'supplant' function from the 'common' module for getting
   // values into our string:
+  // calls append or prepend function of dom elelment, if..? it it doesn't have append, do prepend. (ie if it has no len
   $("#timeline")[append ? "append" : "prepend"](common.supplant("\
 </div>
 <div class='timeline_item user_{screenname}'>
@@ -407,10 +433,11 @@ $( "#"+tweet.id ).dialog({
         },
  
   open: function(event, ui) { 
- hold(1.6*cyclespeed*1000); //stack them at the top instead of where new spawn
- if(!$(this).parent().hasClass('moved')){
- $(this).dialog('option', 'position', ['right','top']);
- $(this).parent().addClass('snapmoved');
+        $(this).parent().css("opacity","1");
+        hold(1.6*cyclespeed*1000); //stack them at the top instead of where new spawn
+        if(!$(this).parent().hasClass('moved')){
+        $(this).dialog('option', 'position', ['right','top']);
+        $(this).parent().addClass('snapmoved');
  }
  
  
@@ -421,7 +448,7 @@ $( "#"+tweet.id ).dialog({
  focus: function(event, ui) { return false },
  dragStop:function(event, ui) { 
      dragging=false;
-     $(this).parent().css("opacity",1);
+     $(this).parent().css("opacity","1");
          $("textarea").val('RT '+percentage.toString()[2]+'@'+$(this).find('.screenname').text()+' '+$(this).find('.content').text());
          $('#latest').append($(this).attr('id'));
          $('.tweet_box').dialog('open');
@@ -468,6 +495,7 @@ $( "#"+tweet.id ).dialog({
              $("textarea").val("checking out youiest.com. it's ... (blowing my mind)");
             }
         //$('#'+tweetidstack.pop()).dialog("open")
+        //$( "#"+tweet.id ).parent().css("opacity","0");
 }
  
 
@@ -733,6 +761,7 @@ $( "#"+tweet.id ).dialog({
             },
      
     open: function(event, ui) { 
+        //$( "#"+tweet.id ).parent().css("opacity","1");
             hold(1.6*cyclespeed*1000); //stack them at the top instead of where new spawn
                 if(!$(this).parent().hasClass('moved')){
                 $(this).dialog('option', 'position', ['right','top']);
