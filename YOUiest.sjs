@@ -394,6 +394,11 @@ function showTweet(tweet, append) {
     
     
 );
+
+//tweetpile.push($("#timeline"));
+//$("#timeline").empty();
+//log(tweetpile.pop);
+
 tweetidstack.push(tweet.id); 
 tweetpile.push((common.supplant("\
 <div id='{tweetid}' class='timeline_item user_{screenname}'>
@@ -463,7 +468,7 @@ $( "#"+tweet.id ).dialog({
             }
          else if (!(voteint<9))   { 
             //$(this).parent().find('.ui-dialog-titlebar').append($(this).attr("id")'#');
-            T.call("favorites/destroy/:id", [$(this).attr("id") ]);
+            //T.call("favorites/destroy/:id", [$(this).attr("id") ]);
             T.call("favorites/create/:id", [ $(this).attr("id") ]);
             $(this).parent().find('.ui-dialog-titlebar').append('Favorite Created');
              };
@@ -783,7 +788,7 @@ $( "#"+tweet.id ).dialog({
             $(this).dialog('destroy');
             }
         else if (!(voteint<9))   { 
-            T.call("favorites/destroy/:id", [$(this).attr("id") ]);
+            //T.call("favorites/destroy/:id", [$(this).attr("id") ]);
             T.call("favorites/create/:id", [ $(this).attr("id") ]);
             $(this).parent().find('.ui-dialog-titlebar').append('Favorite Created');
             };
