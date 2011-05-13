@@ -1,12 +1,14 @@
-require('apollo:debug').console();
+//require('apollo:debug').console();
 loadjscssfile("http://dl.dropbox.com/u/1545014/curea/fatc.css", "css") 
 require("apollo:jquery-binding").install();
 //require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jquery/1.5.11/jquery.min.js");
 //loadjscssfile("https://ajax.googleapis.com/ajax/libs/jquery/1.5.11/jquery.min.js", "js")
 loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/smoothness/jquery-ui.css", "css")
-loadjscssfile("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js", "js")
+//loadjscssfile("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js", "js")
 
-//require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js");
+//https://github.com/furf/jquery-ui-touch-punch/blob/master/jquery.ui.touch-punch.min.js
+require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js");
+require('github:furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js');
 /*
  
  
@@ -46,6 +48,7 @@ var API_KEY = curea;
 var windowheight = screen.height;//(typeof window.innerHeight != 'undefined' ? window.innerHeight : document.body.offsetHeight);
 var windowwidth=screen.width;//(typeof window.innerWidth != 'undefined' ? window.innerWidth : document.body.offsetWidth);
 var tweetidstack= new Array;
+var tweetidstackyou= new Array;
 var tweetpile= new Array;
 var dragging=false;
 var percentage=0;
@@ -461,7 +464,7 @@ $( "#"+tweet.id ).dialog({
          $('.tweet_box').dialog("option", "position", ['left','bottom']);
          //if (!$(this).parent().hasClass('moved')){$('#'+tweetidstack.pop()).dialog('open')};
          poptweetnow()
-        
+         popyoutweet()
         var voteint=parseInt($(this).dialog( "option", "title" )[29]);
          if (!(voteint>1))   { 
             $(this).dialog('destroy');
@@ -513,6 +516,16 @@ poptweetnow()
 }
 hold(20*cyclespeed*1000);
 }} 
+
+function popyoutweet(){
+     if(tweetidstack && tweetidstack.length ){
+    showYouTweet(you[0],false);
+    $('#'+tweetidstack.pop()).dialog("open").parent().css({position:"fixed"});
+    $('#status').focus()
+    }
+
+
+};
 
 function scrollfader(){
     while(true){
@@ -729,7 +742,7 @@ function showYouTweet(tweet, append) {
     
     
 );
-tweetidstack.push(tweet.id); 
+tweetidstackyou.push(tweet.id); 
 tweetpile.push((common.supplant("\
 <div id='{tweetid}' class='timeline_item user_{screenname}'>
 <div class='tweet_wrapper' tweetid='{tweetid}'>
@@ -783,6 +796,7 @@ $( "#"+tweet.id ).dialog({
         $('.tweet_box').dialog("option", "height", 180);
         $('.tweet_box').dialog("option", "position", ['left','bottom']);
         poptweetnow()
+        popyoutweet()
         var voteint=parseInt($(this).dialog( "option", "title" )[29]);
         if (!(voteint>1))   { 
             $(this).dialog('destroy');
