@@ -8,7 +8,8 @@ loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/smoot
 
 //https://github.com/furf/jquery-ui-touch-punch/blob/master/jquery.ui.touch-punch.min.js
 require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js");
-require('github:furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js');
+if(navigator.userAgent.match(/iPad/i) != null){require('github:furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js')};
+// trouble on android, run touch library on ipad only for now.
 /*
  
  
