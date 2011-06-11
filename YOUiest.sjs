@@ -1,4 +1,4 @@
-//require('apollo:debug').console();
+require('apollo:debug').console();
 loadjscssfile("http://dl.dropbox.com/u/1545014/curea/fatc.css", "css") 
 require("apollo:jquery-binding").install();
 //require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jquery/1.5.11/jquery.min.js");
@@ -109,7 +109,7 @@ function paintpage(){
     $('#info').append('<span id="latest"><strong>latest: </strong><span></span></span>');
     $('#info').append('<span id="tweeting_button_container"></span>');
     $('#info').append('<span id="tweeting_status"></span>');
-    $('#info').append('<button id="tweeting_button">Tweet</button>');
+    $('#info').append('<button id="tweeting_button">Tweet</button>');//problem can't be clicked
     $('wrapper').append('<div id="timeline"></div>');
 //window.session_wrap='<div id="session_buttons"><div id="current_user"></div></div>'
 };
@@ -139,8 +139,11 @@ var you=require('apollo:twitter').get(twitter_user);
 // tools
 var common = require("apollo:common");
 
+// create elements on page, timing has importance
+paintpage()
+
 //cache ... unsure
-var tweeting_button = $("#tweeting_wrap");
+var tweeting_button = $("#tweeting_button");
 // cache tweet input box .. performance
 var status_el = $("#status");
 // cache characters left.. perf
@@ -153,7 +156,7 @@ function poptweetnow(){
     
     if(tweetidstack && tweetidstack.length ){
     $('#'+tweetidstack.pop()).dialog("open").parent().css({position:"fixed"});
-    $('#status').focus()
+    //$('#status').focus()
     }
 }
 
@@ -168,9 +171,6 @@ showYouTweet(you[0],false);
 // display first tweet from host
 poptweetnow();
 
-
-// create elements on page, timing has importance
-paintpage()
 
 //----------------------------------------------------------------------
 // main program loop
@@ -454,7 +454,7 @@ $( "#"+tweet.id ).dialog({
  //setTimeout("if (!(this).parent().hasClass('moved')) {$(this).parent().dialog('option', 'position', ['right','top'])} ;",1500) 
  
  },
- focus: function(event, ui) { return false },
+ //focus: function(event, ui) { return false },
  dragStop:function(event, ui) { 
      dragging=false;
      $(this).parent().css("opacity","1");
@@ -649,6 +649,7 @@ function tweet_loop() {
     $(".tweet_box").show();
     while (true) {
       tweeting_button.$click();
+      //$('#tweeting_button').live('click', function() {        // Live handler called.    });
       tweeting_button.attr("disabled", "disabled");
       $("#tweeting_status").text("Tweeting...");
       try {
@@ -667,8 +668,7 @@ function tweet_loop() {
   finally {
     $(".tweet_box").hide();
   }
-}
- 
+} 
 // shows a signout button and blocks until it is clicked
 function waitfor_signout() {
   try {
