@@ -1,4 +1,5 @@
 var c=require('apollo:debug').console();
+
 require("apollo:jquery-binding").install();
 loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/smoothness/jquery-ui.css", "css");
 //https://github.com/furf/jquery-ui-touch-punch/blob/master/jquery.ui.touch-punch.min.js
@@ -21,6 +22,7 @@ function popsimple(tweetstack){
     
     if (!tweetstack.length){ 
         log('no length');
+        $('.tweet_wrapper').dialog('destroy');
         alert('Thanks!');
         //showTweet(tweetstack.shift(),false);
         //tweetstack = replenish();
