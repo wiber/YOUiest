@@ -1,5 +1,5 @@
-var c=require('apollo:debug').console();
-
+var debugging=true;
+if (debugging){ var c=require('apollo:debug').console(); };
 require("apollo:jquery-binding").install();
 loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/smoothness/jquery-ui.css", "css");
 //https://github.com/furf/jquery-ui-touch-punch/blob/master/jquery.ui.touch-punch.min.js
@@ -16,8 +16,8 @@ var you = require('apollo:twitter').get(twitter_user);
 var lastID=you[you.length-1].id;
 log(lastID);
 var cyclespeed=10;
-var debugging=true;
 
+var votehash = new Array();
 function popsimple(tweetstack){
     
     if (!tweetstack.length){ 
@@ -161,10 +161,16 @@ $( "#"+tweet.id ).dialog({
     var dragging=false;
     $(this).parent().css("opacity","1");
     var voteint=parseInt($(this).dialog( "option", "title" )[29]);
+    var thisID=$(this).attr('tweetid');
+    if(!votehash[thisID]){log('not in hash, creating')}
+    votehash[thisID]=voteint
+    log(votehash,votehash.length);
     if (!(voteint>1))   { 
         $(this).dialog('destroy');
         }
-    you=popsimple(you)
+    if(!$(this).hasClass('moved')){
+        you=popsimple(you)
+        };
          }, 
     drag:function(event, ui) { 
         var scrolled = $(document).scrollTop()
