@@ -1,30 +1,47 @@
-require('apollo:debug').console();
-loadjscssfile("http://dl.dropbox.com/u/1545014/curea/fatc.css", "css") ;
+var c=require('apollo:debug').console();
 require("apollo:jquery-binding").install();
 loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/smoothness/jquery-ui.css", "css");
 //https://github.com/furf/jquery-ui-touch-punch/blob/master/jquery.ui.touch-punch.min.js
 require('apollo:http').script("https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js");
-if(navigator.userAgent.match(/iPad/i) !== null){require('github:furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js')};
-// trouble on android, run touch library on ipad only for now.
+if(navigator.userAgent.match(/iPad/i) !== null || navigator.userAgent.match(/android/i) !== null ){require('github:furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js')};
+// trouble on android, run touch library on ipad only for now. ipad\|android
+//require('github:furf/jquery-ui-touch-punch/master/jquery.ui.touch-punch.min.js')
+loadjscssfile("http://dl.dropbox.com/u/1545014/curea/fatc.css", "css") ;
 var common = require("apollo:common");
 
-if ($('#youiest').attr('twitter_user')){var twitter_user=$('#youiest').attr('twitter_user')};
-var you=require('apollo:twitter').get(twitter_user);
+if ($('#youiest').attr('twitter_user')){var twitter_user=$('#youiest').attr('twitter_user')}
+else{var twitter_user='wiber'};
+var you = require('apollo:twitter').get(twitter_user);
+var lastID=you[you.length-1].id;
+log(lastID);
+var cyclespeed=10;
+var debugging=true;
 
-
-var didScroll = false;
-$(window).scroll(function() {
-    didScroll = true;
-});
-
-setInterval("if (didScroll){politeFade()}",500);
-function politeFade(){
-    $(".wibe").fadeOut('fast');
-    hold(100);
-    didScroll=false;
-    //hold(3500); 
-    var snapper = setTimeout("showTweet(you.shift(),false)",500);
+function popsimple(tweetstack){
+    
+    if (!tweetstack.length){ 
+        log('no length');
+        alert('Thanks!');
+        //showTweet(tweetstack.shift(),false);
+        //tweetstack = replenish();
+        //require('apollo:twitter').get(twitter_user);
+        return tweetstack;
+        }
+    else {
+        showTweet(tweetstack.shift(),false);
+        log(tweetstack.length)
+        return tweetstack;
+    }   
+    ;
 };
+
+function start(){
+    log(you);
+    popsimple(you);
+};
+
+
+
 
 var winW = 630, winH = 460;
 if (document.body && document.body.offsetWidth) {
@@ -58,9 +75,11 @@ function loadjscssfile(filename, filetype){
   document.getElementsByTagName("head")[0].appendChild(fileref);
 }
 
-
-
-showTweet(you.shift(),false);
+function log(string){
+    if (debugging){
+        c.log(string);
+    };
+};
 
 function showTweet(tweet, append) {
   var date = new Date(tweet.created_at.replace(/^\w+ (\w+) (\d+) ([\d:]+) \+0000 (\d+)$/,
@@ -95,7 +114,7 @@ function showTweet(tweet, append) {
 <div class='timeline_item user_{screenname}'>
 <div  class='tweet_wrapper' tweetid='{tweetid}' id='{tweetid}'>
 <span class='tweet_thumb'>
-<img src='{image}' width='48' height='48'/>
+<img src='{image}' width='48' height='48' style='float: left;'/>
 </span>
 <span class='tweet_body'>
 <span class='screenname'>{screenname}</span>
@@ -143,17 +162,21 @@ $( "#"+tweet.id ).dialog({
     if (!(voteint>1))   { 
         $(this).dialog('destroy');
         }
-    showTweet(you.shift(),false);
+    you=popsimple(you)
          }, 
     drag:function(event, ui) { 
         var scrolled = $(document).scrollTop()
-        var window=.84*winH//$(window).height()
+        var window=winH//.84*winH//$(window).height()
         var dragposition = ui.offset.top
         percentage = 1000+Math.round(Math.max(Math.min(100*( ( (window-1.2*(dragposition-scrolled))/(window)    )),99),0),2)    ;      
-        var bigdigit= "<span style='font-size:38px'>"+percentage.toString()[2]+"</span>" ;// explains the link between 0-9 vote and percentages/percentiles..
+        var bigdigit= "<span style='font-size:32px'>"+percentage.toString()[2]+"</span>" ;// explains the link between 0-9 vote and percentages/percentiles..
         $("#"+tweet.id ).dialog('option', 'title', bigdigit+""+percentage.toString()[3]+"%" );
         $(this).parent().css("opacity",Math.abs(1.4*(percentage-1000)/100-0.07)+.05);
         dragging=true;
             }, 
         });
+return true;
 }
+
+
+start();
