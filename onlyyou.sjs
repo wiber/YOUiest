@@ -14,7 +14,7 @@ if ($('#youiest').attr('twitter_user')){var twitter_user=$('#youiest').attr('twi
 else{var twitter_user='wiber'};
 var you = require('apollo:twitter').get(twitter_user);
 var lastID=you[you.length-1].id;
-log(lastID);
+log('lastID'+lastID);
 var cyclespeed=10;
 
 var votehash = new Array();
@@ -23,7 +23,7 @@ function popsimple(tweetstack){
     if (!tweetstack.length){ 
         log('no length');
         $('.tweet_wrapper').dialog('destroy');
-        alert('Thanks!');
+        alert('Thanks! Log in for more.');
         //showTweet(tweetstack.shift(),false);
         //tweetstack = replenish();
         //require('apollo:twitter').get(twitter_user);
@@ -31,7 +31,7 @@ function popsimple(tweetstack){
         }
     else {
         showTweet(tweetstack.shift(),false);
-        log(tweetstack.length)
+        log("tweetstack.length"+tweetstack.length)
         return tweetstack;
     }   
     ;
@@ -77,9 +77,9 @@ function loadjscssfile(filename, filetype){
   document.getElementsByTagName("head")[0].appendChild(fileref);
 }
 
-function log(string){
+function log(tobelogged){
     if (debugging){
-        c.log(string);
+        c.log(tobelogged);
     };
 };
 
@@ -145,7 +145,6 @@ $( "#"+tweet.id ).dialog({
  dragStart:function(event, ui) { 
         dragging=true;
         $('.tweet_box').dialog('close');
-        $(this).parent().addClass('moved');
         $(this).parent().removeClass('snapmoved');
         },
  
@@ -164,11 +163,12 @@ $( "#"+tweet.id ).dialog({
     var thisID=$(this).attr('tweetid');
     if(!votehash[thisID]){log('not in hash, creating')}
     votehash[thisID]=voteint
-    log(votehash,votehash.length);
+    log(votehash);
     if (!(voteint>1))   { 
         $(this).dialog('destroy');
         }
-    if(!$(this).hasClass('moved')){
+    if(!$(this).parent().hasClass('moved')){
+        $(this).parent().addClass('moved');
         you=popsimple(you)
         };
          }, 
