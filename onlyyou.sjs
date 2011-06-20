@@ -16,8 +16,9 @@ var you = require('apollo:twitter').get(twitter_user);
 var lastID=you[you.length-1].id;
 log('lastID'+lastID);
 var cyclespeed=10;
-
+var voter=333;
 var votehash = new Array();
+var wibes = new Array;
 function popsimple(tweetstack){
     
     if (!tweetstack.length){ 
@@ -136,6 +137,8 @@ function showTweet(tweet, append) {
     
     
 );
+wibes[tweet.id]=tweet;
+log(wibes);
 $( "#"+tweet.id ).dialog({ 
     title:tweet.user.screen_name+" - "+date_string +'   [   DRAG ME!   ]',
     position: ['right','bottom'], 
@@ -161,9 +164,18 @@ $( "#"+tweet.id ).dialog({
     $(this).parent().css("opacity","1");
     var voteint=parseInt($(this).dialog( "option", "title" )[29]);
     var thisID=$(this).attr('tweetid');
+    tweet.connectionsIN=new Array;
     if(!votehash[thisID]){log('not in hash, creating')}
+    if(!wibes[thisID].connectionsIN[voter]){log('not in wibes')};
     votehash[thisID]=voteint
-    log(votehash);
+    //tweet.vote=[voter,voteint]; //we want  hash
+    
+    tweet.connectionsIN[voter]=[voteint];
+    wibes[thisID]=tweet
+    //wibes[thisID,tweet]=voteint
+    log(wibes)
+    log(wibes[thisID].connectionsIN[voter]);
+//    log(votehash);
     if (!(voteint>1))   { 
         $(this).dialog('destroy');
         }
