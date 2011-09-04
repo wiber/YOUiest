@@ -1,5 +1,10 @@
+/*
+run the app by adding
+<script src='http://dl.dropbox.com/u/1545014/curea/youiest.js'/></script>
+to any page. This file is hosted on drop box and simply points to the other parts of the app hosted on github etc.
+*/
 var debugging=true;
-if (debugging){ var c=require('apollo:debug').console(); };
+if (debugging){ var c=require('apollo:debug').console(); require('wibes')};
 require("apollo:jquery-binding").install();
 loadjscssfile("http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/themes/smoothness/jquery-ui.css", "css");
 //https://github.com/furf/jquery-ui-touch-punch/blob/master/jquery.ui.touch-punch.min.js
@@ -17,11 +22,13 @@ var lastID=you[you.length-1].id;
 log('lastID'+lastID);
 var cyclespeed=10;
 var voter=333;
+var howmany =5;
 var votehash = new Array();
 var wibes = new Array;
+var connections= new Array;
+var youtrix = new Array;
 function popsimple(tweetstack){
-    
-    if (!tweetstack.length){ 
+    if (!tweetstack.length || howmany==0){ 
         log('no length');
         $('.tweet_wrapper').dialog('destroy');
         alert('Thanks! Log in for more.');
@@ -32,7 +39,8 @@ function popsimple(tweetstack){
         }
     else {
         showTweet(tweetstack.shift(),false);
-        log("tweetstack.length"+tweetstack.length)
+        howmany-= 1;
+        log("tweetstack.length"+tweetstack.length+"howmany"+howmany)
         return tweetstack;
     }   
     ;
@@ -165,17 +173,30 @@ $( "#"+tweet.id ).dialog({
     var voteint=parseInt($(this).dialog( "option", "title" )[29]);
     var thisID=$(this).attr('tweetid');
     tweet.connectionsIN=new Array;
-    if(!votehash[thisID]){log('not in hash, creating')}
-    if(!wibes[thisID].connectionsIN[voter]){log('not in wibes')};
-    votehash[thisID]=voteint
+    //if(!votehash[thisID]){log('not in hash, creating')}
+    //if(!wibes[thisID].connectionsIN[voter]){log('not in wibes')};
+    //votehash[thisID]=voteint
     //tweet.vote=[voter,voteint]; //we want  hash
     
     tweet.connectionsIN[voter]=[voteint];
     wibes[thisID]=tweet
     //wibes[thisID,tweet]=voteint
-    log(wibes)
-    log(wibes[thisID].connectionsIN[voter]);
+    // post wibes to server as they happen, if server responds with low load condition, else wait till done and do all at once, with twitter user object as well
+    log(wibes); log(wibes.length);
+    //log(wibes[thisID].connectionsIN[voter]);
+    connections[voter+'.'+thisID]=voteint; //works!
+    log (connections); log('<<connections')
+    /*
+    var dual = new Array; dual=[voter,thisID];
+    var matrix = new Array;
+    matrix[dual]=voteint;
+    log (matrix); log(matrix[voter,thisID]);   */
+    youtrix[parseFloat(voter+'.'+thisID)]=voteint;
+    log(youtrix);
+    log(youtrix.sort());
+    //log(parseFloat(voter+'.'+thisID)-10); //works..
 //    log(votehash);
+    //for (key in youtrix){log(key.split('.'))} log('split keys <<');
     if (!(voteint>1))   { 
         $(this).dialog('destroy');
         }
@@ -194,6 +215,9 @@ $( "#"+tweet.id ).dialog({
         $(this).parent().css("opacity",Math.abs(1.4*(percentage-1000)/100-0.07)+.05);
         dragging=true;
             }, 
+    close:function(event,ui){
+        $('.moved').dialog('destroy');
+    }
         });
 return true;
 }
