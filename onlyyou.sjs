@@ -69,10 +69,8 @@ if (window.innerWidth && window.innerHeight) {
  winW = window.innerWidth;
  winH = window.innerHeight;
 } 
-
-$(document).ready(function() {
- functionwinH = window.innerHeight ? window.innerHeight : $(window).height()
-});
+if(navigator.userAgent.match(/iPad/i) !== null){winH=320;}
+    
  
 function loadjscssfile(filename, filetype){
  if (filetype=="js"){ //if filename is a external JavaScript file
