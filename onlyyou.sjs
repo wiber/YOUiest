@@ -69,7 +69,7 @@ if (window.innerWidth && window.innerHeight) {
  winW = window.innerWidth;
  winH = window.innerHeight;
 } 
-if(navigator.userAgent.match(/iPad/i) !== null){winH=320;}
+if(navigator.userAgent.match(/iPad/i) !== null){winH=640}
     
  
 function loadjscssfile(filename, filetype){
