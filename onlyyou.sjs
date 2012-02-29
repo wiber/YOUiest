@@ -221,7 +221,7 @@ $( "#"+tweet.id ).dialog({
         $('.moved').dialog('destroy');
     }
         });
-        .css({position:"fixed"});
+        $( "#"+tweet.id ).css({position:"fixed"});
 return true;
 }
 
